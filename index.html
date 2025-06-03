@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Gestão - Engenharia Elétrica</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background: #f9faf6;
+            font-family: 'Montserrat', Arial, sans-serif;
+            margin: 0;
+        }
+        .main-container {
+            max-width: 1200px;
+            margin: 32px auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 16px rgba(10,36,99,0.07);
+            padding: 32px 24px;
+        }
+        .topbar {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .topbar img {
+            height: 38px;
+        }
+        .topbar-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #0a2463;
+        }
+        .menu {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+        .menu button {
+            background: #f5f8fc;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 22px;
+            font-size: 1rem;
+            color: #0a2463;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s, color 0.2s;
+        }
+        .menu button.active {
+            background: #0a2463;
+            color: #fff;
+        }
+        .dashboard-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-bottom: 32px;
+        }
+        .card {
+            background: #f5f8fc;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(10,36,99,0.06);
+            flex: 1 1 220px;
+            min-width: 200px;
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+        }
+        .card-title {
+            font-size: 1rem;
+            color: #0a2463;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .card-value {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #3e92cc;
+        }
+        .dashboard-graphs {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        .graph-block {
+            background: #f5f8fc;
+            border-radius: 10px;
+            padding: 24px 20px;
+            flex: 1 1 350px;
+            min-width: 300px;
+            box-shadow: 0 1px 4px rgba(10,36,99,0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .graph-block.pizza {
+            max-width: 200px;
+            min-width: 160px;
+            padding: 18px 10px;
+        }
+        .graph-block.wide {
+            flex: 1 1 100%;
+            max-width: 100%;
+            min-width: 100%;
+        }
+        .graph-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0a2463;
+            margin-bottom: 14px;
+        }
+        .actions-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+        .actions-bar button {
+            background: #eaf4fc;
+            color: #0a2463;
+            border: none;
+            border-radius: 6px;
+            padding: 7px 16px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 7px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #e0e6ed;
+            padding: 8px 10px;
+            text-align: left;
+        }
+        th {
+            background: #f4f8fb;
+        }
+        .btn-edit {
+            background:#3e92cc;
+            color:#fff;
+            border:none;
+            padding:5px 12px;
+            border-radius:4px;
+            cursor:pointer;
+            margin-right:4px;
+        }
+        .btn-delete {
+            background:#d7263d;
+            color:#fff;
+            border:none;
+            padding:5px 12px;
+            border-radius:4px;
+            cursor:pointer;
+        }
+        @media (max-width: 900px) {
+            .dashboard-cards, .dashboard-graphs {
+                flex-direction: column;
+                gap: 18px;
+            }
+            .main-container {
+                padding: 14px 4px;
+            }
+            .graph-block.wide {
+                flex: 1 1 100%;
+            }
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 4px;
+            }
+            header, nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .dashboard-logo {
+                height: 36px;
+            }
+        }
+        #modalPagamento, #modalCentroCusto, #modalCategoria {
+            display:none;
+            position:fixed;
+            top:0;left:0;width:100vw;height:100vh;
+            background:rgba(10,36,99,0.15);
+            z-index:1000;
+            align-items:center;
+            justify-content:center;
+        }
+        #formPagamento, #formCentroCusto, #formCategoria {
+            background:#fff;
+            padding:28px 22px;
+            border-radius:12px;
+            box-shadow:0 2px 16px rgba(10,36,99,0.12);
+            min-width:300px;
+            max-width:98vw;
+        }
+        #formPagamento label, #formCentroCusto label, #formCategoria label { font-size:15px; color:#0a2463; }
+        #formPagamento input, #formPagamento select,
+        #formCentroCusto input, #formCentroCusto select,
+        #formCategoria input {
+            margin-bottom:8px;
+            margin-top:2px;
+            width:100%;
+            padding:7px;
+            border-radius:5px;
+            border:1px solid #b3c6e0;
+            font-size:15px;
+        }
+        #formPagamento button[type="submit"], #formCentroCusto button[type="submit"], #formCategoria button[type="submit"] {
+            background:#3e92cc;
+            color:#fff;
+            padding:8px 20px;
+            border:none;
+            border-radius:6px;
+            font-weight:600;
+            cursor:pointer;
+        }
+        #formPagamento button[type="button"], #formCentroCusto button[type="button"], #formCategoria button[type="button"] {
+            background:#eee;
+            color:#0a2463;
+            padding:8px 20px;
+            border:none;
+            border-radius:6px;
+            font-weight:600;
+            cursor:pointer;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script>
+        if (!sessionStorage.getItem('usuarioLogado')) {
+            window.location.href = "login.html";
+        }
+    </script>
+</head>
+<body>
+    <div class="main-container">
+        <div class="topbar">
+            <img src="https://i.imgur.com/cuf8Y1L.png" alt="EnerTek Engenharia">
+            <span class="topbar-title">Sistema de Gestão - Engenharia Elétrica</span>
+            <button style="margin-left:auto;background:#d7263d;color:#fff;border:none;padding:8px 18px;border-radius:6px;font-weight:700;cursor:pointer;" onclick="logout()">Sair</button>
+        </div>
+        <div class="menu">
+            <button class="active" onclick="showTab('dashboard')">Dashboard</button>
+            <button onclick="showTab('financeiro')">Controle Financeiro</button>
+            <button onclick="window.location.href='centro-custo-dashboard.html'">Dashboard - Centro de Custo</button>
+            <button onclick="showTab('centroCustos')">Centro de Custos</button>
+            <button onclick="showTab('categorias')">Categorias</button>
+            <button onclick="showTab('crm')">CRM - Orçamentos</button>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="tab-section">
+            <div class="actions-bar">
+                <button onclick="exportarRelatorio()">📄 Exportar Relatório</button>
+            </div>
+            <h2>Dashboard Executivo</h2>
+            <div class="dashboard-cards">
+                <div class="card">
+                    <span class="card-title">💰 Saldo Atual</span>
+                    <span class="card-value" id="saldoAtual">R$ 0,00</span>
+                </div>
+                <div class="card">
+                    <span class="card-title">📥 Entradas do Mês Previstas</span>
+                    <span class="card-value" id="entradasMesPrev">R$ 0,00</span>
+                </div>
+                <div class="card">
+                    <span class="card-title">📥 Entradas do Mês Executadas</span>
+                    <span class="card-value" id="entradasMesExec">R$ 0,00</span>
+                </div>
+                <div class="card">
+                    <span class="card-title">📤 Saídas do Mês Previstas</span>
+                    <span class="card-value" id="saidasMesPrev">R$ 0,00</span>
+                </div>
+                <div class="card">
+                    <span class="card-title">📤 Saídas do Mês Executadas</span>
+                    <span class="card-value" id="saidasMesExec">R$ 0,00</span>
+                </div>
+                <div class="card">
+                    <span class="card-title">💸 A Receber</span>
+                    <span class="card-value" id="aReceber">R$ 0,00</span>
+                </div>
+            </div>
+            <div class="dashboard-graphs">
+                <!-- Gráfico 1: Receita vs Despesa (Largura expandida) -->
+                <div class="graph-block wide">
+                    <div class="graph-title">Receita vs Despesa (Últimos 6 Meses)</div>
+                    <canvas id="graficoReceitaDespesas"></canvas>
+                </div>
+                
+                <!-- Gráfico 2: Distribuição de Custos -->
+                <div class="graph-block pizza">
+                    <div class="graph-title">Distribuição de Custos</div>
+                    <canvas id="graficoDistribuicaoCustos"></canvas>
+                </div>
+                
+                <!-- Gráfico 3: Receita por Setor -->
+                <div class="graph-block pizza">
+                    <div class="graph-title">Receita por Setor</div>
+                    <canvas id="graficoReceitaSetor"></canvas>
+                </div>
+                
+                <!-- Gráfico 4: Despesas por Setor (Mês) -->
+                <div class="graph-block pizza">
+                    <div class="graph-title">Despesas por Setor (Mês)</div>
+                    <canvas id="graficoDespesasSetor"></canvas>
+                </div>
+                
+                <!-- Gráfico 5: Margem de Lucro -->
+                <div class="graph-block pizza">
+                    <div class="graph-title">Margem de Lucro (%)</div>
+                    <canvas id="graficoMargemLucro"></canvas>
+                </div>
+                
+                <!-- Gráfico 6: Status dos Orçamentos -->
+                <div class="graph-block pizza">
+                    <div class="graph-title">Status dos Orçamentos</div>
+                    <canvas id="graficoBarra"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTROLE FINANCEIRO -->
+        <div id="financeiro" class="tab-section" style="display:none;">
+            <div class="actions-bar">
+                <button onclick="abrirModalPagamento()" style="background:#3e92cc;color:#fff;padding:10px 20px;border:none;border-radius:6px;font-size:15px;font-weight:600;cursor:pointer;">
+                    + Lançar Pagamento
+                </button>
+            </div>
+            <h2>Controle Financeiro</h2>
+            <table id="tabelaFinanceiro">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Descrição</th>
+                        <th>Centro de Custo</th>
+                        <th>Categoria</th>
+                        <th>Tipo</th>
+                        <th>Valor</th>
+                        <th>Status</th>
+                        <th>Observações</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Linhas dinâmicas via JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Modal de lançamento financeiro -->
+        <div id="modalPagamento">
+            <form id="formPagamento">
+                <h3 id="tituloModalPagamento">Lançar Pagamento</h3>
+                <label>Data:<br><input type="date" name="data" required></label><br>
+                <label>Descrição:<br><input type="text" name="descricao" required></label><br>
+                <label>Centro de Custo:<br>
+                    <select name="centroCusto" id="selectCentroCusto" required>
+                        <option value="">Selecione</option>
+                    </select>
+                </label><br>
+                <label>Categoria:<br>
+                    <select name="categoria" id="selectCategoria" required>
+                        <option value="">Selecione</option>
+                    </select>
+                </label><br>
+                <label>Tipo:<br>
+                    <select name="tipo" required>
+                        <option value="Saída">Saída</option>
+                        <option value="Entrada">Entrada</option>
+                    </select>
+                </label><br>
+                <label>Valor:<br><input type="number" name="valor" step="0.01" min="0" required></label><br>
+                <label>Status:<br>
+                    <select name="status" required>
+                        <option value="Pendente">Pendente</option>
+                        <option value="Pago">Pago</option>
+                        <option value="A Receber">A Receber</option>
+                        <option value="Recebido">Recebido</option>
+                    </select>
+                </label><br>
+                <label>Observações:<br><input type="text" name="obs"></label><br>
+                <input type="hidden" name="editIndex" id="editIndex" value="">
+                <div style="margin-top:12px;display:flex;gap:8px;">
+                    <button type="submit">Salvar</button>
+                    <button type="button" onclick="fecharModalPagamento()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- CENTRO DE CUSTOS -->
+        <div id="centroCustos" class="tab-section" style="display:none;">
+            <div class="actions-bar">
+                <button onclick="abrirModalCentroCusto()" style="background:#3e92cc;color:#fff;padding:10px 20px;border:none;border-radius:6px;font-size:15px;font-weight:600;cursor:pointer;">
+                    + Adicionar Centro de Custo
+                </button>
+            </div>
+            <h2>Centros de Custo (Obras)</h2>
+            <table id="tabelaCentroCusto">
+                <thead>
+                    <tr>
+                        <th>Centro de Custo</th>
+                        <th>Categoria</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Linhas dinâmicas via JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Modal de cadastro de centro de custo -->
+        <div id="modalCentroCusto">
+            <form id="formCentroCusto">
+                <h3>Novo Centro de Custo</h3>
+                <label>Centro de Custo:<br><input type="text" name="centroCusto" required></label><br>
+                <label>Categoria:<br>
+                    <select name="categoria" required>
+                        <option value="Projeto">Projeto</option>
+                        <option value="Energia Solar">Energia Solar</option>
+                        <option value="Instalações">Instalações</option>
+                        <option value="Laudo">Laudo</option>
+                    </select>
+                </label><br>
+                <div style="margin-top:12px;display:flex;gap:8px;">
+                    <button type="submit">Salvar</button>
+                    <button type="button" onclick="fecharModalCentroCusto()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- CATEGORIAS -->
+        <div id="categorias" class="tab-section" style="display:none;">
+            <div class="actions-bar">
+                <button onclick="abrirModalCategoria()" style="background:#3e92cc;color:#fff;padding:10px 20px;border:none;border-radius:6px;font-size:15px;font-weight:600;cursor:pointer;">
+                    + Adicionar Categoria
+                </button>
+            </div>
+            <h2>Categorias Financeiras</h2>
+            <table id="tabelaCategoria">
+                <thead>
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Linhas dinâmicas via JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Modal de cadastro de categoria -->
+        <div id="modalCategoria">
+            <form id="formCategoria">
+                <h3 id="tituloModalCategoria">Nova Categoria</h3>
+                <label>Categoria:<br><input type="text" name="categoria" id="inputCategoria" required></label><br>
+                <input type="hidden" name="editCategoriaIndex" id="editCategoriaIndex" value="">
+                <div style="margin-top:12px;display:flex;gap:8px;">
+                    <button type="submit">Salvar</button>
+                    <button type="button" onclick="fecharModalCategoria()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- CRM ORÇAMENTOS -->
+        <div id="crm" class="tab-section" style="display:none;">
+            <div class="actions-bar">
+                <button onclick="adicionarOrcamento()">+ Novo Orçamento</button>
+            </div>
+            <h2>CRM - Orçamentos</h2>
+            <!-- Tabela e lógica JS aqui -->
+        </div>
+    </div>
+
+    <script>
+        let editLancamentoIndex = null;
+        let editCategoriaIndex = null;
+        let graficoPizza, graficoBarra, graficoDespesasSetor, graficoReceitaDespesas, graficoDistribuicaoCustos, graficoReceitaSetor, graficoMargemLucro;
+
+        function showTab(tab) {
+            document.querySelectorAll('.tab-section').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.menu button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tab).style.display = 'block';
+            document.querySelector('.menu button[onclick="showTab(\''+tab+'\')"]').classList.add('active');
+            if(tab === 'financeiro') carregarLancamentos();
+            if(tab === 'dashboard') atualizarDashboard();
+            if(tab === 'centroCustos') carregarCentroCustos();
+            if(tab === 'categorias') carregarCategorias();
+        }
+
+        function logout() {
+            sessionStorage.removeItem('usuarioLogado');
+            window.location.href = "login.html";
+        }
+
+        function exportarRelatorio() {
+            alert('Funcionalidade de exportação em desenvolvimento.');
+        }
+
+        function adicionarOrcamento() {
+            alert('Funcionalidade de novo orçamento em desenvolvimento.');
+        }
+
+        function abrirModalPagamento() {
+            preencherSelectCentroCusto();
+            preencherSelectCategoria();
+            document.getElementById('tituloModalPagamento').innerText = "Lançar Pagamento";
+            document.getElementById('editIndex').value = "";
+            document.getElementById('modalPagamento').style.display = 'flex';
+        }
+
+        function fecharModalPagamento() {
+            document.getElementById('modalPagamento').style.display = 'none';
+            document.getElementById('formPagamento').reset();
+            editLancamentoIndex = null;
+        }
+
+        function abrirModalCentroCusto() {
+            document.getElementById('modalCentroCusto').style.display = 'flex';
+        }
+
+        function fecharModalCentroCusto() {
+            document.getElementById('modalCentroCusto').style.display = 'none';
+            document.getElementById('formCentroCusto').reset();
+        }
+
+        function abrirModalCategoria() {
+            document.getElementById('tituloModalCategoria').innerText = "Nova Categoria";
+            document.getElementById('inputCategoria').value = "";
+            document.getElementById('editCategoriaIndex').value = "";
+            document.getElementById('modalCategoria').style.display = 'flex';
+        }
+
+        function fecharModalCategoria() {
+            document.getElementById('modalCategoria').style.display = 'none';
+            document.getElementById('formCategoria').reset();
+            editCategoriaIndex = null;
+        }
+
+        function carregarCentroCustos() {
+            const tbody = document.querySelector('#tabelaCentroCusto tbody');
+            tbody.innerHTML = '';
+            const centros = JSON.parse(localStorage.getItem('centrosCusto') || '[]');
+            centros.forEach((c, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${c.centroCusto}</td>
+                    <td>${c.categoria}</td>
+                    <td><button onclick="excluirCentroCusto(${idx})" class="btn-delete">Excluir</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function preencherSelectCentroCusto() {
+            const select = document.getElementById('selectCentroCusto');
+            select.innerHTML = '<option value="">Selecione</option>';
+            const centros = JSON.parse(localStorage.getItem('centrosCusto') || '[]');
+            centros.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.centroCusto;
+                opt.textContent = c.centroCusto + ' (' + c.categoria + ')';
+                select.appendChild(opt);
+            });
+        }
+
+        document.getElementById('formCentroCusto').onsubmit = function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const novo = {
+                centroCusto: form.centroCusto.value,
+                categoria: form.categoria.value
+            };
+            let centros = JSON.parse(localStorage.getItem('centrosCusto') || '[]');
+            centros.push(novo);
+            localStorage.setItem('centrosCusto', JSON.stringify(centros));
+            fecharModalCentroCusto();
+            carregarCentroCustos();
+        };
+
+        function excluirCentroCusto(idx) {
+            if(confirm('Deseja realmente excluir este centro de custo?')) {
+                let centros = JSON.parse(localStorage.getItem('centrosCusto') || '[]');
+                centros.splice(idx, 1);
+                localStorage.setItem('centrosCusto', JSON.stringify(centros));
+                carregarCentroCustos();
+            }
+        }
+
+        // Categorias
+        function carregarCategorias() {
+            const tbody = document.querySelector('#tabelaCategoria tbody');
+            tbody.innerHTML = '';
+            const categorias = JSON.parse(localStorage.getItem('categoriasFinanceiras') || '[]');
+            categorias.forEach((c, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${c}</td>
+                    <td>
+                        <button class="btn-edit" onclick="editarCategoria(${idx})">Editar</button>
+                        <button class="btn-delete" onclick="excluirCategoria(${idx})">Excluir</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function preencherSelectCategoria() {
+            const select = document.getElementById('selectCategoria');
+            select.innerHTML = '<option value="">Selecione</option>';
+            const categorias = JSON.parse(localStorage.getItem('categoriasFinanceiras') || '[]');
+            categorias.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.textContent = c;
+                select.appendChild(opt);
+            });
+        }
+
+        document.getElementById('formCategoria').onsubmit = function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const nova = form.categoria.value;
+            let categorias = JSON.parse(localStorage.getItem('categoriasFinanceiras') || '[]');
+            const editIdx = document.getElementById('editCategoriaIndex').value;
+            if(editIdx !== "") {
+                const antiga = categorias[parseInt(editIdx)];
+                categorias[parseInt(editIdx)] = nova;
+                localStorage.setItem('categoriasFinanceiras', JSON.stringify(categorias));
+                let lancamentos = JSON.parse(localStorage.getItem('lancamentosFinanceiros') || '[]');
+                lancamentos = lancamentos.map(l => l.categoria === antiga ? {...l, categoria: nova} : l);
+                localStorage.setItem('lancamentosFinanceiros', JSON.stringify(lancamentos));
+            } else if (!categorias.includes(nova)) {
+                categorias.push(nova);
+                localStorage.setItem('categoriasFinanceiras', JSON.stringify(categorias));
+            }
+            fecharModalCategoria();
+            carregarCategorias();
+            carregarLancamentos();
+            atualizarDashboard();
+        };
+
+        function excluirCategoria(idx) {
+            if(confirm('Deseja realmente excluir esta categoria?')) {
+                let categorias = JSON.parse(localStorage.getItem('categoriasFinanceiras') || '[]');
+                const removida = categorias[idx];
+                categorias.splice(idx, 1);
+                localStorage.setItem('categoriasFinanceiras', JSON.stringify(categorias));
+                let lancamentos = JSON.parse(localStorage.getItem('lancamentosFinanceiros') || '[]');
+                lancamentos = lancamentos.map(l => l.categoria === removida ? {...l, categoria: ""} : l);
+                localStorage.setItem('lancamentosFinanceiros', JSON.stringify(lancamentos));
+                carregarCategorias();
+                carregarLancamentos();
+                atualizarDashboard();
+            }
+        }
+
+        function editarCategoria(idx) {
+            const categorias = JSON.parse(localStorage.getItem('categoriasFinanceiras') || '[]');
+            document.getElementById('tituloModalCategoria').innerText = "Editar Categoria";
+            document.getElementById('inputCategoria').value = categorias[idx];
+            document.getElementById('editCategoriaIndex').value = idx;
+            document.getElementById('modalCategoria').style.display = 'flex';
+        }
+
+        // Lançamentos Financeiros
+        function carregarLancamentos() {
+            const tbody = document.querySelector('#tabelaFinanceiro tbody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            const lancamentos = JSON.parse(localStorage.getItem('lancamentosFinanceiros') || '[]');
+            lancamentos.forEach((lanc, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${lanc.data}</td>
+                    <td>${lanc.descricao}</td>
+                    <td>${lanc.centroCusto || '-'}</td>
+                    <td>${lanc.categoria}</td>
+                    <td>${lanc.tipo}</td>
+                    <td>R$ ${Number(lanc.valor).toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
+                    <td>${lanc.status}</td>
+                    <td>${lanc.obs || ''}</td>
+                    <td>
+                        <button class="btn-edit" onclick="editarLancamento(${idx})">Editar</button>
+                        <button class="btn-delete" onclick="excluirLancamento(${idx})">Excluir</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        document.getElementById('formPagamento').onsubmit = function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const novo = {
+                data: form.data.value,
+                descricao: form.descricao.value,
+                centroCusto: form.centroCusto.value,
+                categoria: form.categoria.value,
+                tipo: form.tipo.value,
+                valor: form.valor.value,
+                status: form.status.value,
+                obs: form.obs.value
+            };
+            let lancamentos = JSON.parse(localStorage.getItem('lancamentosFinanceiros') || '[]');
+            const editIndex = document.getElementById('editIndex').value;
+            if(editIndex !== "") {
+                lancamentos[parseInt(editIndex)] = novo;
+            } else {
+                lancamentos.push(novo);
+            }
+            localStorage.setItem('lancamentosFinanceiros', JSON.stringify(lancamentos));
+            fecharModalPagamento();
+            carregarLancamentos();
+            atualizarDashboard();
+        };
+
+        function excluirLancamento(idx) {
+            if(confirm('Deseja realmente excluir este lançamento?')) {
+                let lancamentos = JSON.parse(localStorage.getItem('lancamentosFinanceiros') || '[]');
+                lancamentos.splice(idx, 1);
+                localStorage.setItem('lancamentosFinanceiros', JSON.stringify(lancamentos));
+                carregarLancamentos();
+                atualizarDashboard();
+            }
+        }
+
+        function editarLancamento(idx) {
+            preencherSelectCentroCusto();
+            preencherSelectCategoria();
+            const lancamentos = JSON.parse(localStorage.getItem('lancamentosFinanceiros') || '[]');
+            const lanc = lancamentos[idx];
+            const form = document.getElementById('formPagamento');
+            form.data.value = lanc.data;
+            form.descricao.value = lanc.descricao;
+            form.centroCusto.value = lanc.centroCusto;
+            form.categoria.value = lanc.categoria;
+            form.tipo.value = lanc.tipo;
+            form.valor.value = lanc.valor;
+            form.status.value = lanc.status;
+            form.obs.value = lanc.obs;
+            document.getElementById('editIndex').value = idx;
+            document.getElementById('tituloModalPagamento').innerText = "Editar Pagamento";
+            document.getElementById('modalPagamento').style.display = 'flex';
+        }
+
+        // Dashboard dinâmico
+        function atualizarDashboard() {
+            const lancamentos = JSON.parse(localStorage.getItem('lancamentosFinanceiros') || '[]');
+            let saldo = 0, aReceber = 0;
+            let entradasMesPrev = 0, entradasMesExec = 0;
+            let saidasMesPrev = 0, saidasMesExec = 0;
+            const now = new Date();
+
+            // Cálculos dos cards
+            lancamentos.forEach(lanc => {
+                const valor = parseFloat(lanc.valor) || 0;
+                const dataLanc = new Date(lanc.data);
+                if(lanc.tipo === "Entrada") saldo += valor;
+                else saldo -= valor;
+
+                if(dataLanc.getMonth() === now.getMonth() && dataLanc.getFullYear() === now.getFullYear()) {
+                    if(lanc.tipo === "Entrada") {
+                        if(lanc.status === "Pago" || lanc.status === "Recebido") entradasMesExec += valor;
+                        else entradasMesPrev += valor;
+                    } else {
+                        if(lanc.status === "Pago" || lanc.status === "Recebido") saidasMesExec += valor;
+                        else saidasMesPrev += valor;
+                    }
+                }
+                if(lanc.status === "A Receber") aReceber += valor;
+            });
+
+            // Atualizar cards
+            document.getElementById('saldoAtual').textContent = "R$ " + saldo.toLocaleString('pt-BR', {minimumFractionDigits:2});
+            document.getElementById('entradasMesPrev').textContent = "R$ " + entradasMesPrev.toLocaleString('pt-BR', {minimumFractionDigits:2});
+            document.getElementById('entradasMesExec').textContent = "R$ " + entradasMesExec.toLocaleString('pt-BR', {minimumFractionDigits:2});
+            document.getElementById('saidasMesPrev').textContent = "R$ " + saidasMesPrev.toLocaleString('pt-BR', {minimumFractionDigits:2});
+            document.getElementById('saidasMesExec').textContent = "R$ " + saidasMesExec.toLocaleString('pt-BR', {minimumFractionDigits:2});
+            document.getElementById('aReceber').textContent = "R$ " + aReceber.toLocaleString('pt-BR', {minimumFractionDigits:2});
+
+            // Processar dados para gráficos
+            const categorias = JSON.parse(localStorage.getItem('categoriasFinanceiras') || '[]');
+            
+            // Dados dos últimos 6 meses
+            const meses = [];
+            const receitas = [];
+            const despesas = [];
+            
+            for(let i = 5; i >= 0; i--) {
+                const data = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const mesKey = `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, '0')}`;
+                meses.push(data.toLocaleString('pt-BR', { month: 'short' }));
+                
+                const filtroMes = lancamentos.filter(l => {
+                    const lancDate = new Date(l.data);
+                    return `${lancDate.getFullYear()}-${String(lancDate.getMonth() + 1).padStart(2, '0')}` === mesKey;
+                });
+                
+                receitas.push(filtroMes.reduce((acc, cur) => cur.tipo === 'Entrada' ? acc + Number(cur.valor) : acc, 0));
+                despesas.push(filtroMes.reduce((acc, cur) => cur.tipo === 'Saída' ? acc + Number(cur.valor) : acc, 0));
+            }
+
+            // Gráfico 1: Receita vs Despesas (6 meses)
+            if(graficoReceitaDespesas) graficoReceitaDespesas.destroy();
+            graficoReceitaDespesas = new Chart(document.getElementById('graficoReceitaDespesas'), {
+                type: 'bar',
+                data: {
+                    labels: meses,
+                    datasets: [{
+                        label: 'Receitas',
+                        data: receitas,
+                        backgroundColor: '#4CAF50'
+                    }, {
+                        label: 'Despesas',
+                        data: despesas,
+                        backgroundColor: '#F44336'
+                    }]
+                },
+                options: {
+                    plugins: {
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            formatter: (v) => v > 0 ? 'R$ ' + v.toLocaleString('pt-BR') : '',
+                            font: { weight: 'bold' }
+                        }
+                    }
+                },
+                plugins: [ChartDataLabels]
+            });
+
+            // Gráfico 2: Distribuição de Custos
+            const custos = categorias.map(cat => 
+                lancamentos.filter(l => l.categoria === cat && l.tipo === 'Saída')
+                          .reduce((acc, cur) => acc + Number(cur.valor), 0)
+            );
+            
+            if(graficoDistribuicaoCustos) graficoDistribuicaoCustos.destroy();
+            graficoDistribuicaoCustos = new Chart(document.getElementById('graficoDistribuicaoCustos'), {
+                type: 'doughnut',
+                data: {
+                    labels: categorias,
+                    datasets: [{
+                        data: custos,
+                        backgroundColor: ['#FF9800', '#2196F3', '#4CAF50', '#9C27B0', '#E91E63', '#00BCD4', '#795548']
+                    }]
+                },
+                options: {
+                    plugins: {
+                        datalabels: {
+                            formatter: (v, ctx) => {
+                                const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                return total > 0 ? ((v / total) * 100).toFixed(1) + '%' : '';
+                            },
+                            color: '#222',
+                            font: { weight: 'bold' }
+                        }
+                    }
+                },
+                plugins: [ChartDataLabels]
+            });
+
+            // Gráfico 3: Receita por Setor
+            const receitasPorCategoria = categorias.map(cat =>
+                lancamentos.filter(l=>l.categoria===cat && l.tipo==="Entrada").reduce((soma,l)=>soma+parseFloat(l.valor||0),0)
+            );
+            
+            if(graficoReceitaSetor) graficoReceitaSetor.destroy();
+            graficoReceitaSetor = new Chart(document.getElementById('graficoReceitaSetor'), {
+                type: 'pie',
+                data: {
+                    labels: categorias,
+                    datasets: [{
+                        data: receitasPorCategoria,
+                        backgroundColor: ['#3e92cc', '#f7b801', '#ea5455', '#7ed957', '#9b59b6', '#b2bec3', '#00b894']
+                    }]
+                },
+                options: {
+                    plugins: {
+                        datalabels: {
+                            formatter: (v) => v > 0 ? 'R$ ' + v.toLocaleString('pt-BR') : '',
+                            color: '#222',
+                            font: { weight: 'bold' }
+                        }
+                    }
+                },
+                plugins: [ChartDataLabels]
+            });
+
+            // Gráfico 4: Despesas por Setor (Mês)
+            const despesasPorCategoria = categorias.map(cat =>
+                lancamentos.filter(l=>l.categoria===cat && l.tipo==="Saída" && (() => {
+                    const d = new Date(l.data);
+                    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+                })()).reduce((soma,l)=>soma+parseFloat(l.valor||0),0)
+            );
+            
+            if(graficoDespesasSetor) graficoDespesasSetor.destroy();
+            graficoDespesasSetor = new Chart(document.getElementById('graficoDespesasSetor'), {
+                type: 'bar',
+                data: {
+                    labels: categorias,
+                    datasets: [{
+                        label: 'Despesas',
+                        data: despesasPorCategoria,
+                        backgroundColor: ['#ea5455', '#b2bec3', '#636e72', '#00b894', '#3e92cc', '#f7b801']
+                    }]
+                },
+                options: {
+                    plugins: {
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'end',
+                            formatter: (v) => v > 0 ? 'R$ ' + v.toLocaleString('pt-BR') : '',
+                            font: { weight: 'bold' }
+                        }
+                    },
+                    scales: { y: { beginAtZero: true } }
+                },
+                plugins: [ChartDataLabels]
+            });
+
+            // Gráfico 5: Margem de Lucro
+            const margensLucro = meses.map((_, i) => {
+                if(receitas[i] > 0) {
+                    return ((receitas[i] - despesas[i]) / receitas[i] * 100).toFixed(1);
+                }
+                return 0;
+            });
+            
+            if(graficoMargemLucro) graficoMargemLucro.destroy();
+            graficoMargemLucro = new Chart(document.getElementById('graficoMargemLucro'), {
+                type: 'line',
+                data: {
+                    labels: meses,
+                    datasets: [{
+                        label: 'Margem %',
+                        data: margensLucro,
+                        borderColor: '#9C27B0',
+                        tension: 0.4,
+                        fill: false
+                    }]
+                },
+                options: {
+                    plugins: {
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            formatter: (v) => v + '%',
+                            font: { weight: 'bold' }
+                        }
+                    }
+                },
+                plugins: [ChartDataLabels]
+            });
+
+            // Gráfico 6: Status dos Orçamentos (placeholder)
+            if(graficoBarra) graficoBarra.destroy();
+            graficoBarra = new Chart(document.getElementById('graficoBarra'), {
+                type: 'bar',
+                data: {
+                    labels: ['Aprovado', 'Em Análise', 'Recusado', 'Pendente'],
+                    datasets: [{
+                        label: 'Qtd',
+                        data: [0,0,0,0],
+                        backgroundColor: ['#3e92cc', '#f7b801', '#ea5455', '#b2bec3']
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    indexAxis: 'y',
+                    scales: {
+                        x: { beginAtZero: true, ticks: { stepSize: 1 } }
+                    }
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            carregarLancamentos();
+            atualizarDashboard();
+            carregarCentroCustos();
+            carregarCategorias();
+        });
+    </script>
+</body>
+</html>

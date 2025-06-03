@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | EnerTek Engenharia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="login-bg">
+        <form class="login-form" id="loginForm">
+            <img src="https://i.imgur.com/cuf8Y1L.png" alt="EnerTek Engenharia" class="login-logo">
+            <h2>Bem-vindo!</h2>
+            <div class="input-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" placeholder="Digite seu e-mail" required>
+            </div>
+            <div class="input-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" placeholder="Digite sua senha" required>
+            </div>
+            <div class="remember-group">
+                <input type="checkbox" id="lembrar">
+                <label for="lembrar">Lembrar-me</label>
+            </div>
+            <button type="submit">Entrar</button>
+            <div class="error-msg" id="errorMsg"></div>
+        </form>
+    </div>
+    <script src="login.js"></script>
+</body>
+</html>

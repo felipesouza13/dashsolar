@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap');
+
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Montserrat', Arial, sans-serif;
+    background: linear-gradient(120deg, #0a2463 0%, #3e92cc 100%);
+}
+
+.login-bg {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-form {
+    background: #fff;
+    padding: 40px 32px 32px 32px;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(10,36,99,0.18);
+    width: 350px;
+    max-width: 90vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-logo {
+    width: 120px;
+    margin-bottom: 16px;
+}
+
+h2 {
+    margin: 0 0 24px 0;
+    color: #0a2463;
+    font-weight: 700;
+}
+
+.input-group {
+    width: 100%;
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    font-size: 14px;
+    color: #0a2463;
+    margin-bottom: 4px;
+}
+
+.input-group input {
+    padding: 10px 12px;
+    border: 1px solid #b3c6e0;
+    border-radius: 6px;
+    outline: none;
+    font-size: 15px;
+    transition: border 0.2s;
+}
+
+.input-group input:focus {
+    border: 1.5px solid #3e92cc;
+}
+
+.remember-group {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.remember-group input[type="checkbox"] {
+    margin-right: 6px;
+}
+
+button[type="submit"] {
+    width: 100%;
+    background: linear-gradient(90deg, #0a2463 60%, #3e92cc 100%);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 0;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-bottom: 12px;
+}
+
+button[type="submit"]:hover {
+    background: linear-gradient(90deg, #3e92cc 0%, #0a2463 100%);
+}
+
+.error-msg {
+    color: #d7263d;
+    font-size: 14px;
+    text-align: center;
+    min-height: 16px;
+    margin-top: 6px;
+}
+
+@media (max-width: 500px) {
+    .login-form {
+        padding: 24px 8px 24px 8px;
+    }
+    .login-logo {
+        width: 90px;
+    }
+}
